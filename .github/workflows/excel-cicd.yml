@@ -26,7 +26,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run pytest unit tests
-        run: pytest tests/
+        run: python -m pytest
 
   # STAGE 2: RUN RUNTIME CHECK, UPDATE EXCEL & SEND TO OUTLOOK
   assess-and-submit:
