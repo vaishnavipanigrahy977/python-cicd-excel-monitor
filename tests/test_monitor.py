@@ -25,3 +25,4 @@ def test_excel_generation(tmp_path, monkeypatch):
     wb = openpyxl.load_workbook(test_excel)
     ws = wb.active
     assert ws.cell(row=2, column=3).value == "PASSED"
+    
