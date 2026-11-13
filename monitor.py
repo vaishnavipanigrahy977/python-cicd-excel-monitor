@@ -7,7 +7,7 @@ import openpyxl
 from openpyxl.styles import Font, PatternFill
 import requests
 
-TARGET_URL = os.environ.get("TARGET_URL", "https://example.com")
+TARGET_URL = os.environ.get("TARGET_URL", "https://robo-ai-agent.onrender.com")
 APP_NAME = os.environ.get("APP_NAME", "ROBO-AI-AGENT")
 EXCEL_FILE = "Assessment_Results.xlsx"
 
@@ -38,7 +38,7 @@ def update_excel_report(status, code, latency_ms):
         ws.title = "Runtime_Assessments"
         headers = ["Timestamp (UTC)", "Application", "Status", "HTTP Code", "Response Time (ms)"]
         ws.append(headers)
-        for cell in ws[1]:
+        for cell in ws:
             cell.font = Font(bold=True, color="FFFFFF")
             cell.fill = PatternFill(start_color="1F4E78", end_color="1F4E78", fill_type="solid")
 
@@ -53,7 +53,7 @@ def update_excel_report(status, code, latency_ms):
 
     for column_cells in ws.columns:
         max_length = max(len(str(cell.value or "")) for cell in column_cells)
-        col_letter = column_cells[0].column_letter
+        col_letter = column_cells.column_letter
         ws.column_dimensions[col_letter].width = max_length + 4
 
     wb.save(EXCEL_FILE)
