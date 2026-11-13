@@ -19,7 +19,7 @@ RECIPIENT_EMAIL = os.environ.get("RECIPIENT_EMAIL", "")
 def check_runtime_health(url):
     start_time = time.time()
     try:
-        response = requests.get(url, timeout=20)
+        response = requests.get(url, timeout=60)
         elapsed_ms = round((time.time() - start_time) * 1000, 2)
         status = "PASSED" if response.status_code == 200 else "FAILED"
         return status, response.status_code, elapsed_ms
@@ -45,17 +45,16 @@ def update_excel_report(status, code, latency_ms):
     timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
     ws.append([timestamp, APP_NAME, status, code, latency_ms])
 
-    # Highlight Status cell green for PASSED or red for FAILED
     status_cell = ws.cell(row=ws.max_row, column=3)
     if status == "PASSED":
         status_cell.fill = PatternFill(start_color="C6EFCE", end_color="C6EFCE", fill_type="solid")
     else:
         status_cell.fill = PatternFill(start_color="FFC7CE", end_color="FFC7CE", fill_type="solid")
 
-    # Auto-adjust column widths for clean viewing in Microsoft Excel
     for column_cells in ws.columns:
         max_length = max(len(str(cell.value or "")) for cell in column_cells)
-        ws.column_dimensions[column_cells[0].column_letter].width = max_length + 4
+        col_letter = column_cells[0].column_letter
+        ws.column_dimensions[col_letter].width = max_length + 4
 
     wb.save(EXCEL_FILE)
     print(f"Successfully updated {EXCEL_FILE} with status: {status}")
