@@ -38,7 +38,7 @@ def update_excel_report(status, code, latency_ms):
         ws.title = "Runtime_Assessments"
         headers = ["Timestamp (UTC)", "Application", "Status", "HTTP Code", "Response Time (ms)"]
         ws.append(headers)
-        for cell in ws[1]:
+        for cell in ws:
             cell.font = Font(bold=True, color="FFFFFF")
             cell.fill = PatternFill(start_color="1F4E78", end_color="1F4E78", fill_type="solid")
 
@@ -53,7 +53,7 @@ def update_excel_report(status, code, latency_ms):
 
     for column_cells in ws.columns:
         max_length = max(len(str(cell.value or "")) for cell in column_cells)
-        col_letter = column_cells[0].column_letter
+        col_letter = column_cells.column_letter
         ws.column_dimensions[col_letter].width = max_length + 4
 
     wb.save(EXCEL_FILE)
@@ -87,7 +87,8 @@ def send_outlook_report(status, code, latency_ms):
             filename=EXCEL_FILE,
         )
 
-    with smtplib.SMTP_SSL("://gmail.com", 465) as server:
+    smtp_server = "smtp." + "gmail.com"
+    with smtplib.SMTP_SSL(smtp_server, 465) as server:
         server.login(SENDER_EMAIL, EMAIL_PASSWORD)
         server.send_message(msg)
     print(f"Successfully delivered {EXCEL_FILE} to {RECIPIENT_EMAIL}")
